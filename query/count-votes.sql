@@ -1,9 +1,9 @@
 SELECT
-	`Movies`.`title`,
-	COUNT(`Movies`.`id`) as `NumberOfVotes`
+  `Movies`.`title`,
+  COUNT(`Movies`.`id`) as `NumberOfVotes`
 FROM
-	`Movies` JOIN `Users`
-		ON `Movies`.`id` = `Users`.`movie_id`
+  `Movies` JOIN `Users`
+    ON `Movies`.`id` = `Users`.`movie_id`
 GROUP BY
-	`Movies`.`id`;
-	
+  `Movies`.`id`;
+  

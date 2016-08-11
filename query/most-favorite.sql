@@ -1,10 +1,10 @@
 SELECT
-	`Movies`.`title`
+  `Movies`.`title`
 FROM
-	`Movies` JOIN `Users`
-		ON `Movies`.`id` = `Users`.`movie_id`
+  `Movies` JOIN `Users`
+    ON `Movies`.`id` = `Users`.`movie_id`
 GROUP BY
-	`Movies`.`id`
+  `Movies`.`id`
 ORDER BY
-	COUNT(`Movies`.`id`) DESC
+  COUNT(`Movies`.`id`) DESC
 LIMIT 1
