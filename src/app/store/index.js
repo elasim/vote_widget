@@ -6,7 +6,7 @@ const enhancers = [];
 
 if (process.env.NODE_ENV === 'development') {
   if (process.env.BROWSER) {
-    const DevTools = require('../containers/DevTools').default;
+    const DevTools = require('../client/components/DevTools').default;
     enhancers.push(DevTools.instrument());
   }
 }
