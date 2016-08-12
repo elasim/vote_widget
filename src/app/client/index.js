@@ -4,7 +4,16 @@ import { Provider } from 'react-redux';
 import configureStore from '../store';
 import 'core-js/fn/array/from';
 
-const store = configureStore();
+let initialState;
+
+Array.from(document.getElementsByTagName('script'))
+  .forEach(script => {
+    if (script.getAttribute('type') === 'app-initial-state') {
+      initialState = JSON.parse(script.innerHTML);
+    }
+  });
+
+const store = configureStore(initialState);
 
 renderApp();
 
