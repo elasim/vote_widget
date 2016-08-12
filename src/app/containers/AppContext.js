@@ -17,5 +17,4 @@ AppContext.propTypes = {
 AppContext.childContextTypes = {
   setTitle: PropTypes.func,
   setMeta: PropTypes.func,
-  insertCss: PropTypes.func,
 };

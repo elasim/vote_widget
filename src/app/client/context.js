@@ -1,8 +1,4 @@
 export default {
-  insertCss: (...styles) => {
-    styles.forEach(style => style.use());
-    return () => styles.forEach(style => style.unuse());
-  },
   setTitle: value => document.title = value,
   setMeta: (key, value) => {
     const metaTags = document.getElementsByTagNames('meta');

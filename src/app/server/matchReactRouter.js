@@ -50,13 +50,14 @@ function renderApp(req, res, next, renderProps) {
     .then(() => {
       const doc = {
         title: '',
-        description: '',
         content: { __html: '' },
-        style: { __html: '' },
         meta: {},
         bundle: assets.bundle.js,
         initialState: store.getState()
       };
+      if (req.headers['accept-language']) {
+        doc.lang = req.headers['accept-language'].match(/^[^,;]+/)[0];
+      }
       const context = {
         setTitle: value => doc.title = value,
         setMeta: (key, value) => doc.meta[key] = value,

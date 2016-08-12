@@ -34,7 +34,6 @@ export default function Html(props) {
 Html.propTypes = {
   title: PropTypes.string,
   lang: PropTypes.string,
-  style: PropTypes.object,
   content: PropTypes.object,
   initialState: PropTypes.object,
   meta: PropTypes.object,

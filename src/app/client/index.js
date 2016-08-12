@@ -15,7 +15,7 @@ if (module.hot) {
 }
 
 if (process.env.NODE_ENV === 'development') {
-  const DevTools = require('../containers/DevTools').default;
+  const DevTools = require('./components/DevTools').default;
   const debugLayer = document.createElement('div');
   document.body.appendChild(debugLayer);
 
