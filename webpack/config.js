@@ -12,11 +12,11 @@ const devServer = makeConfigure('dev', 'server', {
   debug: true,
   devtool: 'sourcemap',
   externals: [
-    nodeExternals(),
+    nodeExternals()
   ],
   node: {
     __dirname: false,
-    __filename: false,
+    __filename: false
   }
 });
 const devClient = makeConfigure('dev', 'client', {
@@ -32,11 +32,11 @@ const prodServer = makeConfigure('prod', 'server', {
   target: 'node',
   debug: false,
   externals: [
-    nodeExternals(),
+    nodeExternals()
   ],
   node: {
     __dirname: false,
-    __filename: false,
+    __filename: false
   }
 });
 const prodClient = makeConfigure('prod', 'client', {
@@ -50,11 +50,11 @@ const prodClient = makeConfigure('prod', 'client', {
 module.exports = {
   dev: {
     server: devServer,
-    client: devClient,
+    client: devClient
   },
   prod: {
     server: prodServer,
-    client: prodClient,
+    client: prodClient
   }
 };
 

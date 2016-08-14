@@ -7,5 +7,5 @@ module.exports = {
     root: SOURCE_DIR,
     extensions: ['', '.js', '.jsx', '.json']
   },
-  cache: true,
+  cache: true
 };
