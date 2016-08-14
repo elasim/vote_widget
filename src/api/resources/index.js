@@ -14,9 +14,15 @@ router.use('/movies', routeMovies);
 // eslint-disable-next-line no-unused-vars
 router.use((error, req, res, next) => {
   debug(error);
-  res.json({
-    message: error.message
-  });
+  if (process.env.NODE_ENV === 'development') {
+    res.status(500).json({
+      message: error.message
+    });
+  } else {
+    res.status(500).json({
+      message: 'internal server error'
+    });
+  }
 });
 
 export default router;
