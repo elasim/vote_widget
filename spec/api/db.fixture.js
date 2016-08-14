@@ -38,30 +38,25 @@ export async function prepare({ host, user, password, database }) {
   }
 }
 
-export function reset(db) {
-  return new Promise((resolve, reject) => {
-    db.beginTransaction(async (error) => {
-      if (error) {
-        return reject(error);
-      }
-      try {
-        await executeQuery(db, 'DROP TABLE IF EXISTS `users`');
-        await executeQuery(db, 'DROP TABLE IF EXISTS `movies`');
-        await executeQuery(db, SQL_CREATE_MOVIES);
-        await executeQuery(db, SQL_CREATE_USERS);
-        await executeCommit(db);
-        resolve();
-      } catch (e) {
-        await executeRollback(db);
-        reject(e);
-      }
-    });
-  });
+export async function reset(db) {
+  await beginTransaction(db);
+  try {
+    await executeQuery(db, 'DROP TABLE IF EXISTS `Users`');
+    await executeQuery(db, 'DROP TABLE IF EXISTS `Movies`');
+    await executeQuery(db, SQL_CREATE_MOVIES);
+    await executeQuery(db, SQL_CREATE_USERS);
+    await executeCommit(db);
+  } catch (e) {
+    await executeRollback(db);
+    throw e;
+  }
 }
 
 export async function createDummy(db) {
   const DUMMY_MOVIES = 3;
   const DUMMY_USERS = 10;
+
+  await beginTransaction(db);
   try {
     for (let i=1; i<=DUMMY_MOVIES; i++) {
       await executeQuery(db, SQL_INSERT_MOVIE, [
@@ -81,6 +76,14 @@ export async function createDummy(db) {
     await executeRollback(db);
     throw error;
   }
+}
+
+function beginTransaction(db) {
+  return new Promise((resolve, reject) => {
+    db.beginTransaction(error => {
+      error ? reject(error) : resolve();
+    });
+  });
 }
 
 function executeQuery(db, query, ...args) {

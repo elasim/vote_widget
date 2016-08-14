@@ -19,18 +19,18 @@ export default {
     });
     getConnection = promisify(pool::pool.getConnection);
 
-    await query(SQL_CREATE_MOVIES);
-    await query(SQL_CREATE_USERS);
+    const queries = [SQL_CREATE_MOVIES, SQL_CREATE_USERS];
+
     if (process.env.NODE_ENV === 'development') {
       const SQL_INSERT_MOVIES = fs
         .readFileSync(path.join(__dirname, '../../query/insert-movies.sql'))
         .toString();
-      await query(SQL_INSERT_MOVIES);
       const SQL_INSERT_USERS = fs
         .readFileSync(path.join(__dirname, '../../query/insert-users.sql'))
         .toString();
-      await query(SQL_INSERT_USERS);
+      queries.push(SQL_INSERT_MOVIES, SQL_INSERT_USERS);
     }
+    await query(queries.join('\n'));
   },
   close,
   query
