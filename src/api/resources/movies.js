@@ -49,19 +49,26 @@ router.get('/', async (req, res, next) => {
       errors
     });
   }
+  let list, count;
   try {
-    const list = await database.query(SQL_LIST_MOVIES, [offset, limit]);
-    const count = await database.query(SQL_COUNT_MOVIES);
-    res.status(200).json({
-      movies: list,
-      total: count[0].count,
-      offset,
-      limit
-    });
+    list = await database.query(SQL_LIST_MOVIES, [offset, limit]);
   } catch (error) {
-    debug('ListAll', error);
-    next(error);
+    debug('Lookup Failure', error);
+    return next(error);
   }
+  try {
+    count = await database.query(SQL_COUNT_MOVIES);
+  } catch (error) {
+    debug('Counting Failure', error);
+    return next(error);
+  }
+
+  res.status(200).json({
+    movies: list,
+    total: count[0].count,
+    offset,
+    limit
+  });
 });
 
 router.put('/:movie/votes', async (req, res, next) => {

@@ -10,7 +10,7 @@ import morgan from 'morgan';
 import database from './db';
 import resources from './resources';
 
-export default function configure({ db, port, cert, key }) {
+export default function configure({ db, host, port, cert, key }) {
   const debug = require('debug')('API.Server');
   const api = express();
 
@@ -58,7 +58,7 @@ export default function configure({ db, port, cert, key }) {
   
   return {
     listen(handler) {
-      server.listen(port, '0.0.0.0', handler);
+      server.listen(port, host, handler);
     },
     async close() {
       server.close();

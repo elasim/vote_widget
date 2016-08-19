@@ -10,6 +10,7 @@ const SSL_KEY = fs.readFileSync(path.join(__dirname, config.https.key));
 
 const server = configure({
   db: config.db,
+  host: config.https.host,
   port: config.https.port,
   cert: SSL_CERT,
   key: SSL_KEY

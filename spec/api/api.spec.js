@@ -253,7 +253,7 @@ describe('API Spec', () => {
 
     describe('When requested movie is not exist', () => {
       it('should be return not exist error with message', (done) => {
-        request.get(`${BASE}/movies/10/votes`, (err, res, body) => {
+        request.get(`${BASE}/movies/4/votes`, (err, res, body) => {
           if (err) {
             return done.fail(err);
           }
@@ -300,7 +300,9 @@ describe('API Spec', () => {
 
     it('should be increase a vote', (done) => {
       request.get(`${BASE}/movies/1/votes`, (err, res, body) => {
-        expect(err).toBe(null);
+        if (err) {
+          return done.fail(err);
+        }
         expect(res.statusCode).toBe(200);
         const before = JSON.parse(body);
 
@@ -332,8 +334,8 @@ describe('API Spec', () => {
           if (err) {
             return done.fail(err);
           }
-          expect(res.statusCode).toBe(422);
           try {
+            expect(res.statusCode).toBe(422);
             const result = JSON.parse(body);
             expect(result.message).toMatch(/Invalid parameter/);
             expect(result.errors[0].field).toBe('name');
