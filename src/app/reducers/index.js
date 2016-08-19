@@ -1,4 +1,4 @@
+import VoteReducer from './vote';
 
-export default function (state = {}) {
-  return state;
-}
+export default VoteReducer;
+

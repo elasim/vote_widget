@@ -1,0 +1,9 @@
+.radio-outer {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 0 5px;
+}
+.item--selectable {
+  display: table;
+  width: 100%;
+}

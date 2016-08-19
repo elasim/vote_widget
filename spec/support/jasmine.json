@@ -1,11 +1,13 @@
 {
   "spec_dir": "spec",
   "spec_files": [
-    "**/*.[sS]pec.js"
+    "api/**/*.[sS]pec.js",
+    "../build/spec/**/*.[sS]pec.js"
   ],
   "helpers": [
     "../node_modules/babel-core/register.js",
     "../node_modules/babel-polyfill",
+    "../node_modules/isomorphic-fetch",
     "helpers/**/*.js"
   ],
   "random": true

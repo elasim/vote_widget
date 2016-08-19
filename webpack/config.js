@@ -7,13 +7,16 @@ const nodeExternals = require('webpack-node-externals'),
   modules = require('./props/module'),
   plugins = require('./props/plugin');
 
+const externals = [
+  nodeExternals({
+    whitelist: /bootstrap\.(min\.)?css/
+  })
+];
 const devServer = makeConfigure('dev', 'server', {
   target: 'node',
   debug: true,
   devtool: 'sourcemap',
-  externals: [
-    nodeExternals()
-  ],
+  externals,
   node: {
     __dirname: false,
     __filename: false
@@ -27,13 +30,21 @@ const devClient = makeConfigure('dev', 'client', {
     assets(output.dev.server.path)
   ]
 });
+const devClientTest = makeConfigure('dev', 'clientTest', {
+  target: 'node',
+  debug: true,
+  devtool: 'sourcemap',
+  externals,
+  node: {
+    __dirname: false,
+    __filename: false
+  }
+});
 
 const prodServer = makeConfigure('prod', 'server', {
   target: 'node',
   debug: false,
-  externals: [
-    nodeExternals()
-  ],
+  externals,
   node: {
     __dirname: false,
     __filename: false
@@ -50,7 +61,8 @@ const prodClient = makeConfigure('prod', 'client', {
 module.exports = {
   dev: {
     server: devServer,
-    client: devClient
+    client: devClient,
+    clientTest: devClientTest
   },
   prod: {
     server: prodServer,
