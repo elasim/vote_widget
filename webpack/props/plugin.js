@@ -31,6 +31,10 @@ module.exports = {
     server: [
       defineEnvDev,
       noErrors
+    ],
+    clientTest: [
+      defineEnvDev,
+      noErrors
     ]
   },
   prod: {

@@ -11,6 +11,10 @@ module.exports = {
     server: {
       path: path.join(OUTPUT_ROOT, './dev'),
       filename: '[name]-server.js'
+    },
+    clientTest: {
+      path: path.join(OUTPUT_ROOT, './spec'),
+      filename: '[name].js'
     }
   },
   prod: {

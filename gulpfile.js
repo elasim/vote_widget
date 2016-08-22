@@ -1,10 +1,10 @@
 const path = require('path'),
+  spawn = require('child_process').spawn,
   gulp = require('gulp'),
   gutil = require('gulp-util'),
   plumber = require('gulp-plumber'),
   eslint = require('gulp-eslint'),
   sassLint = require('gulp-sass-lint'),
-  nodemon = require('gulp-nodemon'),
   del = require('del'),
   webpack = require('webpack'),
   webpackStream = require('webpack-stream'),
@@ -38,6 +38,12 @@ gulp.task('dev:client', () => {
     .pipe(plumber())
     .pipe(webpackStream(webpackConfig.dev.client))
     .pipe(gulp.dest(webpackConfig.dev.client.output.path));
+});
+gulp.task('dev:client-test', () => {
+  return gulp.src(['spec/**/*.spec.js'])
+    .pipe(plumber())
+    .pipe(webpackStream(webpackConfig.dev.clientTest))
+    .pipe(gulp.dest(webpackConfig.dev.clientTest.output.path));
 });
 gulp.task('dev:server', () => {
   return gulp.src(flatEntry(webpackConfig.dev.server.entry))
@@ -73,27 +79,29 @@ gulp.task('clean:prod', () => {
 });
 
 gulp.task('webpack-dev-server', () => {
-  let server, webpackServer;
+  const aggreateTimeout = 300;
+  let appServer, apiServer, webpackServer;
 
   const compiler = webpack(webpackConfig.dev.client);
   compiler.plugin('after-emit', (compilation, callback) => {
-    runAppServer();
+    runServer();
     callback();
   });
 
   initWebpackServer();
 
-  function runAppServer() {
-    if (!server) {
-      initAppServer();
+  function runServer() {
+    if (!appServer && !apiServer) {
+      initServer();
     } else {
-      server.restart();
+      appServer.restart(aggreateTimeout);
+      apiServer.restart(aggreateTimeout);
     }
   }
 
-  function initAppServer() {
+  function initServer() {
     webpack(webpackConfig.dev.server).watch({
-      aggreateTimeout: 300,
+      aggreateTimeout,
       poll: 1000
     }, (err, stats) => {
       if (err) {
@@ -110,15 +118,20 @@ gulp.task('webpack-dev-server', () => {
       }
       // eslint-disable-next-line
       console.log(stats.toString());
-      if (!server) {
-        server = nodemon({
-          script: path.join(webpackConfig.dev.server.output.path, './app-server.js'),
-          ignore: ['**/*'],
-          delay: 500,
-          verbose: true,
-        });
+      if (!appServer) {
+        appServer = createProcess(
+          path.join(webpackConfig.dev.server.output.path, './app-server.js'),
+          { 'NODE_TLS_REJECT_UNAUTHORIZED': 0 }
+        );
       } else {
-        server.restart();
+        appServer.restart(aggreateTimeout);
+      }
+      if (!apiServer) {
+        apiServer = createProcess(
+          path.join(webpackConfig.dev.server.output.path, './api-server.js')
+        );
+      } else {
+        apiServer.restart(aggreateTimeout);
       }
     });
   }
@@ -136,7 +149,7 @@ gulp.task('webpack-dev-server', () => {
   function createWepbackServer() {
     return new webpackDevServer(compiler, {
       proxy: {
-        '*': 'http://127.0.0.1:8000'
+        '*': 'http://127.0.0.1:9000'
       },
       publicPath: '/',
       filename: 'bundle.js',
@@ -146,7 +159,7 @@ gulp.task('webpack-dev-server', () => {
       noInfo: true,
       quiet: false,
       watchOptions: {
-        aggreateTimeout: 300,
+        aggreateTimeout,
         poll: 1000,
       },
       stats: {
@@ -166,4 +179,33 @@ function flatEntry(entry) {
   return Object.keys(entry).reduce((flatten, moduleName) => {
     return flatten.concat(entry[moduleName]);
   }, []);
+}
+
+function createProcess(script, env) {
+  let child = execute();
+  let throttle;
+
+  function execute() {
+    const proc = spawn('node', [script], { env });
+    
+    proc.stdout.on('data', data => process.stdout.write(data));
+    proc.stderr.on('data', data => process.stderr.write(data));
+    proc.on('exit', () => {
+      process.stdout.write(`${script}(${proc.pid}) exit\n`);
+    });
+    return proc;
+  }
+  function restart() {
+    child.kill('SIGINT');
+    child = execute();
+  }
+  return {
+    restart(throttleTimeInMsec) {
+      clearTimeout(throttle);
+      throttle = setTimeout(restart, throttleTimeInMsec);
+    },
+    kill() {
+      child.kill('SIGINT');
+    }
+  };
 }
