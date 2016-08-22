@@ -30,7 +30,7 @@ module.exports = {
     ],
     server: [
       defineEnvDev,
-      noErrors,
+      noErrors
     ]
   },
   prod: {

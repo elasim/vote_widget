@@ -24,7 +24,7 @@ const css = {
       sourceMaps: true,
       loaders: true,
       localIdentName: '[local]__[hash:4]'
-    }),
+    })
   ]
 };
 const cssLocal = Object.assign({}, css, {
@@ -64,22 +64,27 @@ const sassLocal = Object.assign({}, sass, {
     'sass'
   ]
 });
+const json = {
+  test: /\.json$/,
+  exclude: /node_modules/,
+  loader: 'json'
+};
 
 module.exports = {
   dev: {
     client: {
-      loaders: [babelHMR, sass, css, file, url]
+      loaders: [babelHMR, sass, css, file, url, json]
     },
     server: {
-      loaders: [babel, sassLocal, cssLocal]
+      loaders: [babel, sassLocal, cssLocal, json]
     }
   },
   prod: {
     client: {
-      loaders: [babel, sass, css, file, url],
+      loaders: [babel, sass, css, file, url, json]
     },
     server: {
-      loaders: [babel, sassLocal, cssLocal]
+      loaders: [babel, sassLocal, cssLocal, json]
     }
   }
 };
@@ -97,6 +102,6 @@ function cssLoader(opt) {
     opt.modules ? 'modules' : '',
     opt.sourceMap ? 'sourceMaps': '',
     opt.loaders ? 'importLoaders=1' : '',
-    opt.localIdentName ? 'localIdentName=' + opt.localIdentName : '',
+    opt.localIdentName ? 'localIdentName=' + opt.localIdentName : ''
   ].join('&');
 }
